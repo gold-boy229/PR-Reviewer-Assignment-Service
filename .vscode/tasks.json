@@ -1,0 +1,51 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create Migration",
+            "type": "shell",
+            "command": "migrate create -ext sql -dir ./db/migrations ${input:migrationName}",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Run migrations",
+            "type": "shell",
+            "command": "go run ./db/cli-migrator.go ${input:migrationType} ${input:migrationNumberToApply}",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "migrationName",
+            "type": "promptString",
+            "description": "Enter the name for the new migration file (e.g., create_<table_name>_table):",
+            "default": "new_migration"
+        },
+        {
+            "id": "migrationType",
+            "type": "promptString",
+            "description": "Enter direction of migrations: up|down",
+            "default": "up"
+        },
+        {
+            "id": "migrationNumberToApply",
+            "type": "promptString",
+            "description": "Enter number of migration you want to apply now:",
+            "default": "1"
+        }
+    ]
+}
