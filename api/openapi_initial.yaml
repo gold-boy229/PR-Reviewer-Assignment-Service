@@ -43,8 +43,6 @@ components:
                 - NOT_ASSIGNED
                 - NO_CANDIDATE
                 - NOT_FOUND
-                - BAD_REQUEST
-                - INTERNAL_SERVER_ERROR
             message:
               type: string
       example:
@@ -164,28 +162,14 @@ paths:
                       username: Bob
                       is_active: true
         '400':
-          description: Команда уже существует | неправильный запрос
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
-              example:
-                team_exists:
-                  summary: Команда с таким название уже существует
-                  value: 
-                    error: { code: TEAM_EXISTS, message: team_name already exists }
-                bad_request:
-                  summary: Невалидный запрос
-                  value:
-                    error: { code: BAD_REQUEST, message: invalid request body }              
-        '500':
-          description: Внутренняя ошибка сервера
+          description: Команда уже существует
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
               example:
                 error:
-                  code: INTERNAL_SERVER_ERROR
-                  message: error during DB operation
+                  code: TEAM_EXISTS
+                  message: team_name already exists
 
   /team/get:
     get:

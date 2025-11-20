@@ -9,7 +9,7 @@ type pullRequestHandler interface {
 }
 
 type teamHandler interface {
-	CreateTeam(c echo.Context) error
+	AddTeam(c echo.Context) error
 	GetTeamByName(c echo.Context) error
 }
 

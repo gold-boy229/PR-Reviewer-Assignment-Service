@@ -52,7 +52,7 @@ func (app *App) Run() {
 		pullRequestHandler pullRequestHandler = handlers.NewPullRequestHandler(repo)
 	)
 
-	app.echo.POST("/team/add", teamHandler.CreateTeam)
+	app.echo.POST("/team/add", teamHandler.AddTeam)
 	app.echo.GET("/team/get", teamHandler.GetTeamByName)
 
 	app.echo.POST("/users/setIsActive", usersHandler.SetIsActiveProperty)
