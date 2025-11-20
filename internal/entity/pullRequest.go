@@ -21,3 +21,12 @@ type PullRequest struct {
 	CreatedAt         string
 	MergedAt          string
 }
+
+type PullRequestMergeParams struct {
+	PullRequestId string
+}
+
+type PullRequestMergeResult struct {
+	PullRequest PullRequest
+	FoundPR     bool
+}

@@ -36,7 +36,7 @@ func (h *pullRequestHandler) CreatePullRequest(c echo.Context) error {
 			dto.NewErrorResponse(enum.ERROR_CODE_PR_EXISTS, "PR уже существует"))
 	}
 
-	return c.JSON(http.StatusCreated, convertEntityToDTO_PR(prCreateResult.PullRequest))
+	return c.JSON(http.StatusCreated, convertEntityToDTO_PullRequest(prCreateResult.PullRequest))
 }
 
 func convertDTOToEntity_PRCreate(reqDTO dto.PullRequestCreate_Request) entity.PullRequestCreateParams {
@@ -47,8 +47,8 @@ func convertDTOToEntity_PRCreate(reqDTO dto.PullRequestCreate_Request) entity.Pu
 	}
 }
 
-func convertEntityToDTO_PR(pr entity.PullRequest) dto.PullRequestCreate_Response {
-	return dto.PullRequestCreate_Response{
+func convertEntityToDTO_PullRequest(pr entity.PullRequest) dto.PullRequest_Response {
+	return dto.PullRequest_Response{
 		PullRequestId:        pr.PullRequestId,
 		PullRequestName:      pr.PullRequestName,
 		AuthorId:             pr.AuthorId,

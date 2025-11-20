@@ -6,7 +6,11 @@ type PullRequestCreate_Request struct {
 	AuthorId        string `json:"author_id" validate:"required"`
 }
 
-type PullRequestCreate_Response struct {
+type PullRequestMegre_Request struct {
+	PullRequestId string `json:"pull_request_id" validate:"required"`
+}
+
+type PullRequest_Response struct {
 	PullRequestId        string   `json:"pull_request_id"`
 	PullRequestName      string   `json:"pull_request_name"`
 	AuthorId             string   `json:"author_id"`

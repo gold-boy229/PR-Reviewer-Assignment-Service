@@ -9,6 +9,7 @@ import (
 
 type pullRequestProvider interface {
 	PullRequestCreate(context.Context, entity.PullRequestCreateParams) (entity.PullRequestCreateResult, error)
+	PullRequestMerge(context.Context, entity.PullRequestMergeParams) (entity.PullRequestMergeResult, error)
 }
 
 type pullRequestHandler struct {
@@ -17,10 +18,6 @@ type pullRequestHandler struct {
 
 func NewPullRequestHandler(repo pullRequestProvider) *pullRequestHandler {
 	return &pullRequestHandler{repo: repo}
-}
-
-func (h *pullRequestHandler) MergePullRequest(c echo.Context) error {
-	return nil
 }
 
 func (h *pullRequestHandler) ReassignPullRequest(c echo.Context) error {
