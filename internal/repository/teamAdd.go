@@ -73,24 +73,18 @@ func insertTeamName(tx *sql.Tx, teamName string) error {
 }
 
 func insertTeamMembers(tx *sql.Tx, team model.Team) error {
-	query, args, err := prepareQueryAndArgs_insertTeamMembers(team)
-	if err != nil {
-		return err
-	}
-	_, err = tx.Exec(query, args...)
-	if err != nil {
-		return err
-	}
-	return nil
+	query, args := prepareQueryAndArgs_insertTeamMembers(team)
+	_, err := tx.Exec(query, args...)
+	return err
 }
 
-func prepareQueryAndArgs_insertTeamMembers(team model.Team) (string, []interface{}, error) {
+func prepareQueryAndArgs_insertTeamMembers(team model.Team) (string, []interface{}) {
 	singleRowArgs := [...]interface{}{"user_id", "username", "team_name", "is_active"}
 	const N = len(singleRowArgs)
 	args := make([]interface{}, 0, len(team.Members)*N)
 
 	if len(team.Members) == 0 {
-		return "", args, nil
+		return "", args
 	}
 
 	var sb strings.Builder
@@ -103,7 +97,7 @@ func prepareQueryAndArgs_insertTeamMembers(team model.Team) (string, []interface
 		sb.WriteString(fmt.Sprintf("($%d, $%d, $%d, $%d)", i*N+1, i*N+2, i*N+3, i*N+4))
 		args = append(args, tm.UserId, tm.Username, team.TeamName, tm.IsActive)
 	}
-	return sb.String(), args, nil
+	return sb.String(), args
 }
 
 func convertEntityToModel_Team(team entity.Team) model.Team {
