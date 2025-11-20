@@ -12,3 +12,7 @@ type TeamMember_Request struct {
 	Username string `json:"username" validate:"required"`
 	IsActive bool   `json:"is_active" validate:"required"`
 }
+
+type TeamNameQuery_Request struct {
+	TeamName string `query:"team_name" validate:"required"`
+}

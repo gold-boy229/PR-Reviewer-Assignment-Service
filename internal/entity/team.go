@@ -10,3 +10,12 @@ type TeamMember struct {
 	Username string
 	IsActive bool
 }
+
+type TeamSearchParams struct {
+	TeamName string
+}
+
+type TeamSearchResult struct {
+	Team  Team
+	Found bool
+}
