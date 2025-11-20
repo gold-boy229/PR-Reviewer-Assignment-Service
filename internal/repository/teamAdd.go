@@ -9,42 +9,46 @@ import (
 	"strings"
 )
 
-func (repo *repository) AddTeam(ctx context.Context, team entity.Team) (resTeam entity.Team, teamExists bool, err error) {
+func (repo *repository) AddTeam(ctx context.Context, team entity.Team) (entity.TeamSearchResult, error) {
 	tx, err := repo.Db.BeginTx(ctx, nil)
 	if err != nil {
-		return entity.Team{}, false, err
+		return entity.TeamSearchResult{}, err
 	}
 	defer tx.Rollback()
 
-	teamExists, err = doesTeamExist(tx, team.TeamName)
+	teamExists, err := doesTeamExist(tx, team.TeamName)
 	if err != nil {
-		return entity.Team{}, false, err
+		return entity.TeamSearchResult{}, err
 	}
 	if teamExists {
-		return entity.Team{}, true, nil
+		return entity.TeamSearchResult{Found: true}, nil
 	}
 
 	err = insertTeamName(tx, team.TeamName)
 	if err != nil {
-		return entity.Team{}, false, err
+		return entity.TeamSearchResult{}, err
 	}
 
 	if len(team.Members) == 0 {
-		resTeam = team
-		return resTeam, false, nil
+		return entity.TeamSearchResult{
+			Team:  team,
+			Found: false,
+		}, nil
 	}
 	err = insertTeamMembers(tx, convertEntityToModel_Team(team))
 	if err != nil {
-		return entity.Team{}, false, err
+		return entity.TeamSearchResult{}, err
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		return entity.Team{}, false, err
+		return entity.TeamSearchResult{}, err
 	}
 
-	resTeam = team
-	return resTeam, false, nil
+	return entity.TeamSearchResult{
+		Team:  team,
+		Found: false,
+	}, nil
 }
 
 func doesTeamExist(tx *sql.Tx, teamName string) (bool, error) {

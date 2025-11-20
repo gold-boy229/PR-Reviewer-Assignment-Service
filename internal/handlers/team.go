@@ -6,7 +6,7 @@ import (
 )
 
 type teamProvider interface {
-	AddTeam(context.Context, entity.Team) (entity.Team, bool, error)
+	AddTeam(context.Context, entity.Team) (entity.TeamSearchResult, error)
 	GetTeamByName(context.Context, entity.TeamSearchParams) (entity.TeamSearchResult, error)
 }
 

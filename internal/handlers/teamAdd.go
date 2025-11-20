@@ -21,17 +21,17 @@ func (h *teamHandler) AddTeam(c echo.Context) error {
 	}
 
 	team := convertDTOToEntity_TeamAdd(reqDTO)
-	resultTeam, teamExists, err := h.repo.AddTeam(context.TODO(), team)
+	teamSearchResult, err := h.repo.AddTeam(context.TODO(), team)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			dto.NewErrorResponse(enum.ERROR_CODE_INTERNAL_SERVER_ERROR, err.Error()))
 	}
-	if teamExists {
+	if teamSearchResult.Found {
 		return c.JSON(http.StatusBadRequest,
 			dto.NewErrorResponse(enum.ERROR_CODE_TEAM_EXISTS, fmt.Sprintf("team %q already exists", team.TeamName)))
 	}
 
-	return c.JSON(http.StatusCreated, convertEntityToDTO_Team(resultTeam))
+	return c.JSON(http.StatusCreated, convertEntityToDTO_Team(teamSearchResult.Team))
 }
 
 func convertDTOToEntity_TeamAdd(req dto.TeamAdd_Request) entity.Team {
