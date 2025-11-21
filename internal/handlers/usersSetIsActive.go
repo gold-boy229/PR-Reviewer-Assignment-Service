@@ -32,7 +32,12 @@ func (h *usersHandler) SetIsActiveProperty(c echo.Context) error {
 			dto.NewErrorResponse(enum.ERROR_CODE_NOT_FOUND, "Пользователь не найден"))
 	}
 
-	return c.JSON(http.StatusOK, convertEntityToDTO_User(userUpdateResult.User))
+	return c.JSON(
+		http.StatusOK,
+		dto.UsersSetIsActive_Response{
+			User: convertEntityToDTO_User(userUpdateResult.User),
+		},
+	)
 }
 
 func convertDTOToEntity_UserSetActivity(reqDTO dto.UsersSetIsActive_Request) entity.UserSetActivityParams {
