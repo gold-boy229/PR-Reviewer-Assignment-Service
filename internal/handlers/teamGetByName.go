@@ -27,7 +27,7 @@ func (h *teamHandler) GetTeamByName(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError,
 			dto.NewErrorResponse(enum.ERROR_CODE_INTERNAL_SERVER_ERROR, err.Error()))
 	}
-	if !teamSearchResult.Found {
+	if !teamSearchResult.FoundTeam {
 		return c.JSON(http.StatusNotFound,
 			dto.NewErrorResponse(enum.ERROR_CODE_NOT_FOUND, "Команда не найдена"))
 	}

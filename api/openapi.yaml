@@ -45,8 +45,8 @@ components:
                 - PR_EXISTS
                 - PR_MERGED
                 - TEAM_EXISTS
-                - TEAM_MEMBER_EXISTS
-                - TEAM_MEMBER_DUPLICATE
+                - TEAM_MEMBER_DB_DUPLICATE
+                - TEAM_MEMBER_REQUEST_DUPLICATE
             message:
               type: string
       example:
@@ -176,18 +176,22 @@ paths:
                   summary: Команда с таким название уже существует
                   value: 
                     error: { code: TEAM_EXISTS, message: team_name already exists }
-                team_member_exists:
-                  summary: Пользователь с таким идентификатором уже существует
+                team_member_db_duplicate:
+                  summary: Пользователь с таким идентификатором уже существует в БД
                   value:
-                    error: { code: TEAM_MEMBER_EXISTS, message: team member already exists}
-                team_member_duplicate:
+                    error: { code: TEAM_MEMBER_DB_DUPLICATE, message: team member already exists in DB}
+                team_member_request_duplicate:
                   summary: В запросе указаны несколько пользователей с одинаковым идентификатором
                   value:
-                    error: { code: TEAM_MEMBER_DUPLICATE, message: several team members have same ids}
+                    error: { code: TEAM_MEMBER_REQUEST_DUPLICATE, message: several team members have same ids}
                 bad_request:
                   summary: Невалидный запрос
                   value:
                     error: { code: BAD_REQUEST, message: invalid request body }
+                no_team_members:
+                  summary: Нельзя создать команду без участников
+                  value:
+                    error: { code: BAD_REQUEST, message: team cannot be created without any members }
         '500':
           description: Внутренняя ошибка сервера
           content:

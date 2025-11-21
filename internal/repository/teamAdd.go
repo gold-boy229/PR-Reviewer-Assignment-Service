@@ -7,6 +7,8 @@ import (
 	"pr-reviewer-assignment-service/internal/entity"
 	"pr-reviewer-assignment-service/internal/model"
 	"strings"
+
+	"github.com/lib/pq"
 )
 
 func (repo *repository) AddTeam(ctx context.Context, team entity.Team) (entity.TeamSearchResult, error) {
@@ -21,7 +23,7 @@ func (repo *repository) AddTeam(ctx context.Context, team entity.Team) (entity.T
 		return entity.TeamSearchResult{}, err
 	}
 	if teamExists {
-		return entity.TeamSearchResult{Found: true}, nil
+		return entity.TeamSearchResult{FoundTeam: true}, nil
 	}
 
 	err = insertTeamName(tx, team.TeamName)
@@ -29,12 +31,17 @@ func (repo *repository) AddTeam(ctx context.Context, team entity.Team) (entity.T
 		return entity.TeamSearchResult{}, err
 	}
 
-	if len(team.Members) == 0 {
+	duplicateTMIds, err := getTeamMembersDuplicatesInDB(tx, team.Members)
+	if err != nil {
+		return entity.TeamSearchResult{}, err
+	}
+	if len(duplicateTMIds) != 0 {
 		return entity.TeamSearchResult{
-			Team:  team,
-			Found: false,
+			ConflictingUserIds: duplicateTMIds,
+			FoundTeam:          false,
 		}, nil
 	}
+
 	err = insertTeamMembers(tx, convertEntityToModel_Team(team))
 	if err != nil {
 		return entity.TeamSearchResult{}, err
@@ -46,8 +53,8 @@ func (repo *repository) AddTeam(ctx context.Context, team entity.Team) (entity.T
 	}
 
 	return entity.TeamSearchResult{
-		Team:  team,
-		Found: false,
+		Team:      team,
+		FoundTeam: false,
 	}, nil
 }
 
@@ -70,6 +77,45 @@ func insertTeamName(tx *sql.Tx, teamName string) error {
 	query := `INSERT INTO teams (team_name) VALUES ($1)`
 	_, err := tx.Exec(query, teamName)
 	return err
+}
+
+func getTeamMembersDuplicatesInDB(tx *sql.Tx, teamMembers []entity.TeamMember) ([]string, error) {
+	teamMemberIds := getTeamMemberIds(teamMembers)
+
+	duplicateIds := make([]string, 0)
+	var curUserId string
+
+	query := `	SELECT u.user_id
+				FROM users u
+				INNER JOIN UNNEST($1::text[]) AS ids(user_id) 
+					ON u.user_id = ids.user_id;`
+	rows, err := tx.Query(query, pq.Array(teamMemberIds))
+	if err != nil {
+		return []string{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(&curUserId)
+		if err != nil {
+			return []string{}, err
+		}
+		duplicateIds = append(duplicateIds, curUserId)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return []string{}, err
+	}
+	return duplicateIds, nil
+}
+
+func getTeamMemberIds(teamMembers []entity.TeamMember) []string {
+	result := make([]string, 0, len(teamMembers))
+	for _, tm := range teamMembers {
+		result = append(result, tm.UserId)
+	}
+	return result
 }
 
 func insertTeamMembers(tx *sql.Tx, team model.Team) error {

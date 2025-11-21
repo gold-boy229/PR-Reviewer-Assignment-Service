@@ -16,6 +16,7 @@ type TeamSearchParams struct {
 }
 
 type TeamSearchResult struct {
-	Team  Team
-	Found bool
+	Team               Team
+	FoundTeam          bool
+	ConflictingUserIds []string
 }

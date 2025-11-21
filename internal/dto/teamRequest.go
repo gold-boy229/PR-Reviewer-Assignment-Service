@@ -4,7 +4,7 @@ type TeamAdd_Request Team_Request
 
 type Team_Request struct {
 	TeamName string               `json:"team_name" validate:"required"`
-	Members  []TeamMember_Request `json:"members" validate:"required"`
+	Members  []TeamMember_Request `json:"members" validate:"required,dive"`
 }
 
 type TeamMember_Request struct {

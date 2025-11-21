@@ -19,7 +19,7 @@ func (repo *repository) GetTeamByName(ctx context.Context, params entity.TeamSea
 		return entity.TeamSearchResult{}, err
 	}
 	if !teamExists {
-		return entity.TeamSearchResult{Found: false}, nil
+		return entity.TeamSearchResult{FoundTeam: false}, nil
 	}
 
 	teamMembers, err := getTeamMembers(tx, params.TeamName)
@@ -37,7 +37,7 @@ func (repo *repository) GetTeamByName(ctx context.Context, params entity.TeamSea
 			TeamName: params.TeamName,
 			Members:  convertModelToEntity_ManyTeamMembers(teamMembers),
 		},
-		Found: true,
+		FoundTeam: true,
 	}, nil
 }
 
