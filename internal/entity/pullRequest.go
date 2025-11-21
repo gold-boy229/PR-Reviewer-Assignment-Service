@@ -30,3 +30,18 @@ type PullRequestMergeResult struct {
 	PullRequest PullRequest
 	FoundPR     bool
 }
+
+type PullRequestReassignParams struct {
+	PullRequestId string
+	OldReviewerId string
+}
+
+type PullRequestReassignResult struct {
+	PullRequest           PullRequest
+	NewReviewerId         string
+	FoundPR               bool
+	FoundOldReviewer      bool
+	IsPullRequestMerged   bool
+	IsOldReviewerAssigned bool
+	FoundCandidate        bool
+}
