@@ -31,7 +31,12 @@ func (h *teamHandler) AddTeam(c echo.Context) error {
 			dto.NewErrorResponse(enum.ERROR_CODE_TEAM_EXISTS, fmt.Sprintf("team %q already exists", team.TeamName)))
 	}
 
-	return c.JSON(http.StatusCreated, convertEntityToDTO_Team(teamSearchResult.Team))
+	return c.JSON(
+		http.StatusCreated,
+		dto.TeamAdd_Response{
+			Team: convertEntityToDTO_Team(teamSearchResult.Team),
+		},
+	)
 }
 
 func convertDTOToEntity_TeamAdd(req dto.TeamAdd_Request) entity.Team {

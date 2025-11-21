@@ -32,7 +32,10 @@ func (h *teamHandler) GetTeamByName(c echo.Context) error {
 			dto.NewErrorResponse(enum.ERROR_CODE_NOT_FOUND, "Команда не найдена"))
 	}
 
-	return c.JSON(http.StatusOK, convertEntityToDTO_Team(teamSearchResult.Team))
+	return c.JSON(
+		http.StatusOK,
+		dto.TeamGet_Response(convertEntityToDTO_Team(teamSearchResult.Team)),
+	)
 }
 
 func convertDTOToEntity_TeamSearch(reqDTO dto.TeamNameQuery_Request) entity.TeamSearchParams {

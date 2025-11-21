@@ -1,6 +1,10 @@
 package dto
 
-type TeamAdd_Response Team_Response
+type TeamAdd_Response struct {
+	Team Team_Response `json:"team"`
+}
+
+type TeamGet_Response Team_Response
 
 type Team_Response struct {
 	TeamName string                `json:"team_name"`
