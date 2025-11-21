@@ -45,3 +45,10 @@ type PullRequestReassignResult struct {
 	IsOldReviewerAssigned bool
 	FoundCandidate        bool
 }
+
+type PullRequestShort struct {
+	PullRequestId   string
+	PullRequestName string
+	AuthorId        string
+	Status          string
+}

@@ -22,3 +22,10 @@ type PullRequest_Response struct {
 	CreatedAt            string   `json:"createdAt"`
 	MergedAt             string   `json:"mergedAt,omitempty"`
 }
+
+type PullRequestShort_Response struct {
+	PullRequestId   string `json:"pull_request_id"`
+	PullRequestName string `json:"pull_request_name"`
+	AuthorId        string `json:"author_id"`
+	Status          string `json:"status"`
+}

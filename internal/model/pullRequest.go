@@ -14,3 +14,10 @@ type PullRequest struct {
 	CreatedAt         time.Time
 	MergedAt          sql.NullTime
 }
+
+type PullRequestShort struct {
+	PullRequestId   string
+	PullRequestName string
+	AuthorId        string
+	Status          string
+}
