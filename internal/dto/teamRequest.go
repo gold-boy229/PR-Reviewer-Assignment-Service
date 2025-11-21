@@ -10,7 +10,7 @@ type Team_Request struct {
 type TeamMember_Request struct {
 	UserId   string `json:"user_id" validate:"required"`
 	Username string `json:"username" validate:"required"`
-	IsActive bool   `json:"is_active" validate:"required"`
+	IsActive *bool  `json:"is_active" validate:"required"`
 }
 
 type TeamNameQuery_Request struct {

@@ -91,6 +91,6 @@ func convertDTOToEntity_OneTeamMember(tm dto.TeamMember_Request) entity.TeamMemb
 	return entity.TeamMember{
 		UserId:   tm.UserId,
 		Username: tm.Username,
-		IsActive: tm.IsActive,
+		IsActive: *tm.IsActive,
 	}
 }
