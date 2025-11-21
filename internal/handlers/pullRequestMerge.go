@@ -11,7 +11,7 @@ import (
 )
 
 func (h *pullRequestHandler) MergePullRequest(c echo.Context) error {
-	var reqDTO dto.PullRequestMegre_Request
+	var reqDTO dto.PullRequestMerge_Request
 	if err := c.Bind(&reqDTO); err != nil {
 		return c.JSON(http.StatusBadRequest,
 			dto.NewErrorResponse(enum.ERROR_CODE_BAD_REQUEST, err.Error()))
@@ -32,10 +32,15 @@ func (h *pullRequestHandler) MergePullRequest(c echo.Context) error {
 			dto.NewErrorResponse(enum.ERROR_CODE_NOT_FOUND, "PR не найден"))
 	}
 
-	return c.JSON(http.StatusOK, convertEntityToDTO_PullRequest(resultPRMerge.PullRequest))
+	return c.JSON(
+		http.StatusOK,
+		dto.PullRequestMerge_Response{
+			PullRequest_Response: convertEntityToDTO_PullRequest(resultPRMerge.PullRequest),
+		},
+	)
 }
 
-func convertDTOToEntity_PRMerge(reqDTO dto.PullRequestMegre_Request) entity.PullRequestMergeParams {
+func convertDTOToEntity_PRMerge(reqDTO dto.PullRequestMerge_Request) entity.PullRequestMergeParams {
 	return entity.PullRequestMergeParams{
 		PullRequestId: reqDTO.PullRequestId,
 	}
