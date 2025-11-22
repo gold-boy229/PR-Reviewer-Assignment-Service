@@ -2,9 +2,10 @@ package config
 
 import (
 	"fmt"
-	"pr-reviewer-assignment-service/internal/consts"
+	"log"
+	"os"
 
-	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/joho/godotenv"
 )
 
 type ConfigDatabase struct {
@@ -16,9 +17,16 @@ type ConfigDatabase struct {
 }
 
 func ReadConfigDB() (config ConfigDatabase, err error) {
-	pathToEnvFile := fmt.Sprintf("%v/.env", consts.PathToEnvFile)
-	if err = cleanenv.ReadConfig(pathToEnvFile, &config); err != nil {
-		return config, err
+	if err := godotenv.Load(); err != nil {
+		log.Print("No .env file found, loading from system environment variables.")
+	}
+
+	config = ConfigDatabase{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Name:     os.Getenv("DB_NAME"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
 	}
 	return config, nil
 }
