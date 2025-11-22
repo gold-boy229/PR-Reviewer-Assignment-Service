@@ -1,3 +1,16 @@
+## Запус сервиса
+### docker compose up
+1. Склонировать проект на вашу машину:
+`git clone https://github.com/gold-boy229/PR-Reviewer-Assignment-Service.git .`
+2. Создать .env файл с переменными, указанными в empty.env одним из способов:
+    1.  На Windows: `copy empty.env .env`
+    2.  На Linux: `cp empty.env .env`
+    3. Свой вариант
+3. Опицонально. Задайте нужные вам значения переменным в .env файле
+4. Выполните команду `docker compose up`
+
+------------
+
 ### Вопросы и принятые решения
 
 #### Все роуты
