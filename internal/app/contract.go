@@ -6,6 +6,8 @@ type pullRequestHandler interface {
 	CreatePullRequest(c echo.Context) error
 	MergePullRequest(c echo.Context) error
 	ReassignPullRequest(c echo.Context) error
+	GetIncompletePRs(c echo.Context) error
+	AssignNewReviewers(c echo.Context) error
 }
 
 type teamHandler interface {

@@ -124,6 +124,24 @@ components:
         status:
           type: string
           enum: [OPEN, MERGED]
+    PullRequestIncomplete:
+      type: object
+      required: [ pull_request_id, pull_request_name, author_id, assigned_reviewers, createdAt ]
+      properties:
+        pull_request_id:
+          type: string
+        pull_request_name:
+          type: string
+        author_id:
+          type: string
+        assigned_reviewers:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamMember"
+          description: Информация о назначенных ревьюверах (0..2)
+        createdAt:
+          type: string
+          format: date-time
 
 paths:
   /team/add:
@@ -555,6 +573,137 @@ paths:
                   summary: Невалидный запрос
                   value:
                     error: { code: BAD_REQUEST, message: invalid request body }              
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              example:
+                error:
+                  code: INTERNAL_SERVER_ERROR
+                  message: error during DB operation
+
+# Дополнительные методы
+  /pullRequest/incomplete:
+    get:
+      tags: [PullRequests]
+      summary: Получить открытые PR'ы, у которых нет двух активных ревьюеров
+      parameters:
+        - $ref: '#/components/parameters/TeamNameQuery'
+      responses:
+        '200':
+          description: Список неполных PR'ов, которые можно как-то улучшить
+          content: 
+            application/json:
+              schema:
+                type: object
+                required: [ team_name, incomplete_prs ]
+                properties:
+                  team_name:
+                    type: string
+                  incomplete_prs:
+                    type: array
+                    items: 
+                      $ref: "#/components/schemas/PullRequestIncomplete"
+              example:
+                team_name: tm_10
+                incomplete_prs:
+                  - pull_request_id: pr_1
+                    pull_request_name: pr_name
+                    author_id: u_1
+                    assigned_reviewers: 
+                    - user_id: u1
+                      username: active_one
+                      is_active: true
+                    - user_id: u2
+                      username: inactive_two
+                      is_active: two
+                    created_at: 2025-10-24T12:34:56Z
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              example:
+                bad_request:
+                  summary: Невалидный запрос
+                  value:
+                    error: { code: BAD_REQUEST, message: invalid request body }
+        '404':
+          description: Команда не найдена
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              example:
+                error:
+                  code: INTERNAL_SERVER_ERROR
+                  message: error during DB operation
+
+  /pullRequest/assignReviewers:
+    post:
+      tags: [PullRequests]
+      summary: Назначить случайных активных ревьюеров из команды автора на этот PR (отличных от автора)
+        После операции на проверку PR назначено до 2 ревьюеров
+      parameters:
+        - $ref: '#/components/parameters/TeamNameQuery'
+      responses:
+        '200':
+          description: Подробная информация о PR
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ pr ]
+                properties:
+                  pr:
+                    $ref: "#/components/schemas/PullRequestIncomplete"
+              example:
+                pr:
+                  pull_request_id: pr_1
+                  pull_request_name: pr_name
+                  author_id: u_1
+                  assigned_reviewers: 
+                  - user_id: u1
+                    username: active_one
+                    is_active: true
+                  - user_id: u2
+                    username: inactive_two
+                    is_active: two
+                  created_at: 2025-10-24T12:34:56Z
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              example:
+                bad_request:
+                  summary: Невалидный запрос
+                  value:
+                    error: { code: BAD_REQUEST, message: invalid request body }
+        '404':
+          description: Команда не найдена
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '409':
+          description: Нарушение доменных правил переназначения
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              examples:
+                merged:
+                  summary: Нельзя добавлять ревьюеров после MERGED
+                  value:
+                    error: { code: PR_MERGED, message: cannot assign new reviewers on merged PR }
+                noCandidate:
+                  summary: Нет доступных кандидатов
+                  value:
+                    error: { code: NO_CANDIDATE, message: no active candidate in team }
         '500':
           description: Внутренняя ошибка сервера
           content:

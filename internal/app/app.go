@@ -61,6 +61,8 @@ func (app *App) Run() {
 	app.echo.POST("/pullRequest/create", pullRequestHandler.CreatePullRequest)
 	app.echo.POST("/pullRequest/merge", pullRequestHandler.MergePullRequest)
 	app.echo.POST("/pullRequest/reassign", pullRequestHandler.ReassignPullRequest)
+	app.echo.GET("/pullRequest/incomplete", pullRequestHandler.GetIncompletePRs)
+	app.echo.POST("/pullRequest/assignReviewers", pullRequestHandler.AssignNewReviewers)
 
 	app.echo.Start(":8080")
 }
