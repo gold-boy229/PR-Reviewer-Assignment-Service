@@ -42,3 +42,7 @@ type PullRequestIncomplete_Response struct {
 	AssignedReviewers []TeamMember_Response `json:"assigned_reviewers"`
 	CreatedAt         string                `json:"createdAt"`
 }
+
+type PullRequestAssignReviewers_Response struct {
+	PullRequestIncomplete PullRequestIncomplete_Response `json:"pr"`
+}

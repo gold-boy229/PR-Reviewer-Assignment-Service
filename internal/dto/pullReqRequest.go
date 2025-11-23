@@ -15,6 +15,8 @@ type PullRequestReassign_Request struct {
 	OldReviewerId string `json:"old_user_id" validate:"required"`
 }
 
-type PullRequestGetIncomple_Request struct {
-	TeamName string `query:"team_name" validate:"required"`
+type PullRequestGetIncomple_Request TeamNameQuery_Request
+
+type PullRequestAssignReviewers_Request struct {
+	PullRequestId string `json:"pull_request_id" validate:"required"`
 }

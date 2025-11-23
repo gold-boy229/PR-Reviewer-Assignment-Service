@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"pr-reviewer-assignment-service/internal/consts"
 	"pr-reviewer-assignment-service/internal/entity"
 	"pr-reviewer-assignment-service/internal/enum"
 	"pr-reviewer-assignment-service/internal/model"
@@ -150,6 +151,18 @@ func getPullRequestAuthor(tx *sql.Tx, prId string) (model.User, error) {
 }
 
 func findNewReviewer(tx *sql.Tx, teamName, authorId, prId string) (candidate model.User, found bool, err error) {
+	const FIND_ONE_CANDIDATE int = 1
+	candidates, err := findNewReviewCandidates(tx, teamName, authorId, prId, FIND_ONE_CANDIDATE)
+	if err != nil {
+		return model.User{}, false, err
+	}
+	if len(candidates) == 0 {
+		return model.User{}, false, nil
+	}
+	return candidates[0], true, nil
+}
+
+func findNewReviewCandidates(tx *sql.Tx, teamName, authorId, prId string, limit int) ([]model.User, error) {
 	query := `	SELECT 
 					user_id,
 					username,
@@ -164,20 +177,34 @@ func findNewReviewer(tx *sql.Tx, teamName, authorId, prId string) (candidate mod
 						FROM pull_requests__M2M__users
 						WHERE pull_request_id = $3
 					)
-				LIMIT 1`
-	err = tx.QueryRow(query, teamName, authorId, prId).Scan(
-		&candidate.UserId,
-		&candidate.Username,
-		&candidate.TeamName,
-		&candidate.IsActive,
-	)
+				LIMIT $4`
+	rows, err := tx.Query(query, teamName, authorId, prId, limit)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return model.User{}, false, nil
-		}
-		return model.User{}, false, err
+		return []model.User{}, err
 	}
-	return candidate, true, nil
+	defer rows.Close()
+
+	resultCandidates := make([]model.User, 0, consts.MAX_REVIEWERS_PER_PULL_REQUEST)
+	var currentCandidate model.User
+
+	for rows.Next() {
+		err = rows.Scan(
+			&currentCandidate.UserId,
+			&currentCandidate.Username,
+			&currentCandidate.TeamName,
+			&currentCandidate.IsActive,
+		)
+		if err != nil {
+			return []model.User{}, err
+		}
+		resultCandidates = append(resultCandidates, currentCandidate)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return []model.User{}, err
+	}
+	return resultCandidates, nil
 }
 
 func reassignReviewer(tx *sql.Tx, prId, oldReviewerId, newReviewerId string) error {

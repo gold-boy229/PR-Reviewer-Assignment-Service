@@ -43,6 +43,7 @@ components:
                 - NOT_ASSIGNED
                 - NOT_FOUND
                 - PR_EXISTS
+                - PR_MAX_REVIEWERS
                 - PR_MERGED
                 - TEAM_EXISTS
                 - TEAM_MEMBER_DB_DUPLICATE
@@ -613,6 +614,7 @@ paths:
                   - pull_request_id: pr_1
                     pull_request_name: pr_name
                     author_id: u_1
+                    status: OPEN
                     assigned_reviewers: 
                     - user_id: u1
                       username: active_one
@@ -651,8 +653,17 @@ paths:
       tags: [PullRequests]
       summary: Назначить случайных активных ревьюеров из команды автора на этот PR (отличных от автора)
         После операции на проверку PR назначено до 2 ревьюеров
-      parameters:
-        - $ref: '#/components/parameters/TeamNameQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ pull_request_id ]
+              properties:
+                pull_request_id: { type: string }
+            example:
+              pull_request_id: pr-1001
       responses:
         '200':
           description: Подробная информация о PR
@@ -669,6 +680,7 @@ paths:
                   pull_request_id: pr_1
                   pull_request_name: pr_name
                   author_id: u_1
+                  status: OPEN
                   assigned_reviewers: 
                   - user_id: u1
                     username: active_one
@@ -688,7 +700,7 @@ paths:
                   value:
                     error: { code: BAD_REQUEST, message: invalid request body }
         '404':
-          description: Команда не найдена
+          description: PR не найден
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
@@ -702,6 +714,10 @@ paths:
                   summary: Нельзя добавлять ревьюеров после MERGED
                   value:
                     error: { code: PR_MERGED, message: cannot assign new reviewers on merged PR }
+                pr_has_max_reviewers:
+                  summary: у PR'а уже есть два ревьюера
+                  value:
+                    error: { code: PR_MAX_REVIEWERS, message: PR already has max number of reviewers} 
                 noCandidate:
                   summary: Нет доступных кандидатов
                   value:

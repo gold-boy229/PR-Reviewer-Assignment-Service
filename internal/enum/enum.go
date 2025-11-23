@@ -7,6 +7,7 @@ const (
 	ERROR_CODE_NOT_ASSIGNED                  string = "NOT_ASSIGNED"
 	ERROR_CODE_NOT_FOUND                     string = "NOT_FOUND"
 	ERROR_CODE_PR_EXISTS                     string = "PR_EXISTS"
+	ERROR_CODE_PR_MAX_REVIEWERS              string = "PR_MAX_REVIEWERS"
 	ERROR_CODE_PR_MERGED                     string = "PR_MERGED"
 	ERROR_CODE_TEAM_EXISTS                   string = "TEAM_EXISTS"
 	ERROR_CODE_TEAM_MEMBER_DB_DUPLICATE      string = "TEAM_MEMBER_DB_DUPLICATE"

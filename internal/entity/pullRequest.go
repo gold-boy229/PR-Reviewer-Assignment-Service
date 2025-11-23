@@ -71,3 +71,15 @@ type PullRequestIncomplete struct {
 	AssignedReviewers []TeamMember
 	CreatedAt         string
 }
+
+type PullRequestAssignReviewersParams struct {
+	PullRequestId string
+}
+
+type PullRequestAssignReviewersResult struct {
+	PullRequestIncomplete PullRequestIncomplete
+	FoundPullRequest      bool
+	FoundCandidate        bool
+	IsPullRequestMerged   bool
+	HasMaxReviewersAmount bool
+}

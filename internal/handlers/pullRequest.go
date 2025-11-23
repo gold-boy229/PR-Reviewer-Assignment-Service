@@ -10,6 +10,7 @@ type pullRequestProvider interface {
 	PullRequestMerge(context.Context, entity.PullRequestMergeParams) (entity.PullRequestMergeResult, error)
 	PullRequestReassign(context.Context, entity.PullRequestReassignParams) (entity.PullRequestReassignResult, error)
 	PullRequestGetOpenIncompletePRs(context.Context, entity.PullRequestGetIncompleteParams) (entity.PullRequestGetIncompleteResult, error)
+	PullRequestAssignReviewers(context.Context, entity.PullRequestAssignReviewersParams) (entity.PullRequestAssignReviewersResult, error)
 }
 
 type pullRequestHandler struct {
