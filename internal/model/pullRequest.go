@@ -21,3 +21,12 @@ type PullRequestShort struct {
 	AuthorId        string
 	Status          string
 }
+
+type PullRequestIncomplete struct {
+	PullRequestId     string
+	PullRequestName   string
+	AuthorId          string
+	Status            string
+	AssignedReviewers []TeamMember
+	CreatedAt         time.Time
+}

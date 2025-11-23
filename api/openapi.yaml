@@ -126,13 +126,15 @@ components:
           enum: [OPEN, MERGED]
     PullRequestIncomplete:
       type: object
-      required: [ pull_request_id, pull_request_name, author_id, assigned_reviewers, createdAt ]
+      required: [ pull_request_id, pull_request_name, author_id, status, assigned_reviewers, createdAt ]
       properties:
         pull_request_id:
           type: string
         pull_request_name:
           type: string
         author_id:
+          type: string
+        status:
           type: string
         assigned_reviewers:
           type: array

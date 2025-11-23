@@ -29,3 +29,16 @@ type PullRequestShort_Response struct {
 	AuthorId        string `json:"author_id"`
 	Status          string `json:"status"`
 }
+
+type PullRequestGetIncomplete_Response struct {
+	TeamName      string                           `json:"team_name"`
+	IncompletePRs []PullRequestIncomplete_Response `json:"incomplete_prs"`
+}
+type PullRequestIncomplete_Response struct {
+	PullRequestId     string                `json:"pull_request_id"`
+	PullRequestName   string                `json:"pull_request_name"`
+	AuthorId          string                `json:"author_id"`
+	Status            string                `json:"status"`
+	AssignedReviewers []TeamMember_Response `json:"assigned_reviewers"`
+	CreatedAt         string                `json:"createdAt"`
+}

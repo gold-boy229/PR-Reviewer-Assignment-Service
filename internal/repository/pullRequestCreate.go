@@ -228,18 +228,17 @@ func getAssignedReviewersIds(tx *sql.Tx, prId string) ([]string, error) {
 }
 
 func convertModelToEntity_PullRequest(pr model.PullRequest) entity.PullRequest {
-	const formatLayout = "2006-01-02T15:04:05Z"
 	resPR := entity.PullRequest{
 		PullRequestId:     pr.PullRequestId,
 		PullRequestName:   pr.PullRequestName,
 		AuthorId:          pr.AuthorId,
 		Status:            pr.Status,
 		AssignedReviewers: pr.AssignedReviewers,
-		CreatedAt:         pr.CreatedAt.Format(formatLayout),
+		CreatedAt:         pr.CreatedAt.Format(consts.FORMAT_LAYOUT_DATE_TIME),
 		MergedAt:          "",
 	}
 	if pr.MergedAt.Valid {
-		resPR.MergedAt = pr.MergedAt.Time.Format(formatLayout)
+		resPR.MergedAt = pr.MergedAt.Time.Format(consts.FORMAT_LAYOUT_DATE_TIME)
 	}
 	return resPR
 }

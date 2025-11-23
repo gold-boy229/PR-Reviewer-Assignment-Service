@@ -52,3 +52,22 @@ type PullRequestShort struct {
 	AuthorId        string
 	Status          string
 }
+
+type PullRequestGetIncompleteParams struct {
+	TeamName string
+}
+
+type PullRequestGetIncompleteResult struct {
+	TeamName      string
+	IncompletePRs []PullRequestIncomplete
+	FoundTeam     bool
+}
+
+type PullRequestIncomplete struct {
+	PullRequestId     string
+	PullRequestName   string
+	AuthorId          string
+	Status            string
+	AssignedReviewers []TeamMember
+	CreatedAt         string
+}
